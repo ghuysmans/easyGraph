@@ -43,7 +43,7 @@ def deploy():
                 shutil.rmtree(obj)
         os.remove('./build.py')
         os.remove('./.gitignore')
-        os.remove('./travis.yml')
+        os.remove('./.travis.yml')
         os.remove('./LICENSE')
     except:
         print('cleanup failed')

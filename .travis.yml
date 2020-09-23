@@ -1,0 +1,17 @@
+language: python
+python:
+  - '3.8'
+
+branches:
+  only:
+    - master
+
+install:
+  - python ./build.py --minify --deploy
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_ACCESS_TOKEN # Set in travis-ci.org dashboard, marked secure https://docs.travis-ci.com/user/deployment/pages/#Setting-the-GitHub-token
+  on:
+    branch: master

@@ -44,7 +44,7 @@ def deploy():
         os.remove('./build.py')
         os.remove('./.gitignore')
         os.remove('./travis.yml')
-        os.remove('./LICENSE'
+        os.remove('./LICENSE')
     except:
         print('cleanup failed')
     else:

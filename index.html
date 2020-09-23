@@ -162,7 +162,7 @@ if (typeof btoa == 'undefined') {
 		<span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
 	</canvas>
 	<div>
-		<p class="center">Export as: <a onclick="saveAsJSON()" href="">JSON</a> | <a id="pngLink" onclick="saveAsPNG()" href="">PNG</a> | <a onclick="saveAsSVG()" href="">SVG</a> | <a onclick="saveAsLaTeX()" href="">LaTeX</a> | Import from: <a onclick="loadFromJSON()" href="">JSON</a> </p>
+		<p class="center">Export as: <a href="javascript:saveAsJSON()">JSON</a> | <a id="pngLink" href="javascript:saveAsPNG()">PNG</a> | <a href="javascript:saveAsSVG()">SVG</a> | <a href="javascript:saveAsLaTeX()">LaTeX</a> | Import from: <a href="javascript:loadFromJSON()">JSON</a> </p>
 		<textarea id="output"></textarea>
 		<p class="center"><button id="importButton" hidden>Import</button></p>
 		<p>The big white box above is the FSM designer.&nbsp; Here's how to use it:</p>

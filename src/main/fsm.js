@@ -111,105 +111,6 @@ var selectedObject = null; // either a Link or a Node
 var currentLink = null; // a Link
 var movingObject = false;
 var originalClick;
-// allowed modes:
-// 'drawing'
-// 'coinfiring'
-var mode = 'drawing';
-
-function updateMode() {
-	var element = document.getElementById('coinfiring');
-	if (element.checked) {
-		mode = 'coinfiring';
-		selectedObject = null;
-	}
-	else {
-		mode = 'drawing';
-	}
-}
-
-// Get an array of edges that are outgoing from this node
-// Used in coin firing
-function leavingEdges(node) {
-	var edges = [];
-	for(var i = 0; i < links.length; i++) {
-		var nodeACheck = links[i].nodeA == node;
-		var nodeBCheck = (!links[i].directed) && links[i].nodeB == node;
-		if(nodeACheck || nodeBCheck) {
-			edges.push(links[i]);
-		}
-	}
-	return edges;
-}
-
-// Change the value of the node by a given amount
-// Used in coin firing
-function incrementNode(node, amount) {
-	var nodeText = node.text;
-	var resultText = '';
-	if (nodeText === '') {
-		nodeText = '0';
-	}
-	// strings that are not valid numbers are NaN
-	if (!isNaN(nodeText)) {
-		var nodeValue = parseInt(nodeText);
-		var newValue = nodeValue + amount;
-		resultText = newValue.toString();
-	}
-	else {
-		var lastIndexOf = function(str, substr) {
-			// Reverse string
-			var rev = str.split("").reverse().join("");
-			var revIndex = rev.indexOf(substr);
-			if (revIndex < 0) {
-				return revIndex;
-			}
-			else {
-				return str.length - revIndex - 1;
-			}
-		};
-		var added = false;
-		// Look for plus sign
-		var plusIndex = nodeText.lastIndexOf('+');
-		var minusIndex = nodeText.lastIndexOf('-');
-		var beforeSign = nodeText;
-		var startValue = 0;
-		// If plus exists see if everything after plus is number
-		if (plusIndex >= 0) {
-			var afterPlus = nodeText.substring(plusIndex + 1);
-			if (afterPlus === '') {
-				afterPlus = '0';
-			}
-			if (!isNaN(afterPlus)) {
-				added = true;
-				beforeSign = nodeText.substring(0, plusIndex);
-				startValue = parseInt(afterPlus);
-			}
-		}
-		// Look for minus sign
-		if (!added && minusIndex >= 0) {
-			var afterMinus = nodeText.substring(minusIndex + 1);
-			if (afterMinus === '') {
-				afterMinus = '0';
-			}
-			if (!isNaN(afterMinus)) {
-				added = true;
-				beforeSign = nodeText.substring(0, minusIndex);
-				startValue = -parseInt(afterMinus);
-			}
-		}
-		var newValue = startValue + amount;
-		if (newValue > 0) {
-			resultText = beforeSign + '+' + newValue;
-		}
-		else if (newValue < 0) {
-			resultText = beforeSign + '-' + (-newValue);
-		}
-		else {
-			resultText = beforeSign;
-		}
-	}
-	node.text = resultText;
-}
 
 function drawUsing(c) {
 	c.clearRect(0, 0, canvas.width, canvas.height);
@@ -280,10 +181,8 @@ function snapNode(node) {
 
 window.onload = function() {
 
-	document.getElementById("clearCanvas").onclick = 
+	document.getElementById("clearCanvas").onclick =
 	function(){
-		var element = document.getElementById('coinfiring');
-		element.checked = false;
 		localStorage['fsm'] = '';
 		location.reload();
 	};
@@ -301,12 +200,6 @@ window.onload = function() {
 		location.reload();
 	};
 
-	document.getElementById('coinfiring').onclick = function() {
-		updateMode();
-	};
-
-	updateMode();
-
 	canvas = document.getElementById('canvas');
 	restoreBackup();
 	draw();
@@ -314,52 +207,22 @@ window.onload = function() {
 	canvas.onmousedown = function(e) {
 		var mouse = crossBrowserRelativeMousePos(e);
 
-		if (mode === 'drawing') {
-			selectedObject = selectObject(mouse.x, mouse.y);
-			movingObject = false;
-			originalClick = mouse;
-			if(selectedObject != null) {
-				if(shift && selectedObject instanceof Node) {
-					currentLink = new SelfLink(selectedObject, mouse, checkDirected());
-				} else {
-					movingObject = true;
-					deltaMouseX = deltaMouseY = 0;
-					if(selectedObject.setMouseStart) {
-						selectedObject.setMouseStart(mouse.x, mouse.y);
-					}
-				}
-				resetCaret();
-			} else if(shift) {
-				currentLink = new TemporaryLink(mouse, mouse, checkDirected());
-			}
-		}
-		else if (mode === 'coinfiring') {
-			var currentObject = selectObject(mouse.x, mouse.y);
-			if (currentObject != null) {
-				if (currentObject instanceof Node) {
-					var chipsToFireAway = 0;
-					// Look for edges to adjacent nodes
-					var modifier = 1;
-					if (shift) {
-						modifier = -1;
-					}
-					var edges = leavingEdges(currentObject);
-					for (var i = 0; i < edges.length; i++) {
-						var edge = edges[i];
-						var otherNode = edge.nodeB;
-						if (otherNode === currentObject) {
-							otherNode = edge.nodeA;
-						}
-						var edgeWeight = 1;
-						if (edge.text !== '' && !isNaN(edge.text)) {
-							edgeWeight = parseInt(edge.text);
-						}
-						chipsToFireAway += edgeWeight;
-						incrementNode(otherNode, edgeWeight * modifier);
-					}
-					incrementNode(currentObject, -chipsToFireAway * modifier)
+		selectedObject = selectObject(mouse.x, mouse.y);
+		movingObject = false;
+		originalClick = mouse;
+		if(selectedObject != null) {
+			if(shift && selectedObject instanceof Node) {
+				currentLink = new SelfLink(selectedObject, mouse, checkDirected());
+			} else {
+				movingObject = true;
+				deltaMouseX = deltaMouseY = 0;
+				if(selectedObject.setMouseStart) {
+					selectedObject.setMouseStart(mouse.x, mouse.y);
 				}
 			}
+			resetCaret();
+		} else if(shift) {
+			currentLink = new TemporaryLink(mouse, mouse, checkDirected());
 		}
 
 		draw();
@@ -377,20 +240,15 @@ window.onload = function() {
 	canvas.ondblclick = function(e) {
 		var mouse = crossBrowserRelativeMousePos(e);
 
-		if (mode === 'drawing') {
-			selectedObject = selectObject(mouse.x, mouse.y);
-			if(selectedObject == null) {
-				selectedObject = new Node(mouse.x, mouse.y);
-				nodes.push(selectedObject);
-				resetCaret();
-				draw();
-			} else if(selectedObject instanceof Node) {
-				selectedObject.isAcceptState = !selectedObject.isAcceptState;
-				draw();
-			}
-		}
-		else if (mode === 'coinfiring') {
-			// Do nothing special
+		selectedObject = selectObject(mouse.x, mouse.y);
+		if(selectedObject == null) {
+			selectedObject = new Node(mouse.x, mouse.y);
+			nodes.push(selectedObject);
+			resetCaret();
+			draw();
+		} else if(selectedObject instanceof Node) {
+			selectedObject.isAcceptState = !selectedObject.isAcceptState;
+			draw();
 		}
 	};
 

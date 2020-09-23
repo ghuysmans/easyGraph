@@ -1,8 +1,8 @@
 /*
-Graph / Finite State Machine Designer
+EasyGraph
 License: MIT License
 
-Copyright (c) 2019 Markus Feng
+Copyright (c) 2020 Alexander Nissen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

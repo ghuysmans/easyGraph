@@ -9,6 +9,9 @@ branches:
 install:
   - python ./build.py --minify --deploy
 
+script:
+  - echo "Skipping tests"
+
 deploy:
   provider: pages
   skip-cleanup: true

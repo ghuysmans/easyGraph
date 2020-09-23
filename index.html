@@ -146,12 +146,13 @@ if (typeof btoa == 'undefined') {
 }
 
 	</script>
-</head><body>
+</head>
+<body>
 	<h1>EasyGraph</h1>
 	<h2>Graph / Finite State Machine Designer</h2>
-    <div class="center">
+	<div class="center">
 		<input type="checkbox" id="directed"> Directed Edges
-		<input type="checkbox" id="gridsnap"> Snap to Grid
+		<input type="checkbox" id="gridsnap" checked> Snap to Grid
 		<br/>
 		<br/>
 		<button id="clearNodes">Clear all Nodes</button>
@@ -170,15 +171,15 @@ if (typeof btoa == 'undefined') {
 			<li><b>Add an arrow:</b> shift-drag on the canvas</li>
 			<li><b>Move something:</b> drag it around</li>
 			<li><b>Delete something:</b> click it and press the delete key (not the backspace key)</li>
-		</ul><ul>
+		</ul>
+		<ul>
 			<li><b>Make accept state:</b> double-click on an existing state</li>
 			<li><b>Type numeric subscript:</b> put an underscore before the number (like "S_0")</li>
 			<li><b>Type greek letter:</b> put a backslash before it (like "\beta")</li>
 		</ul>
 		<p>This was made in HTML5 and JavaScript using the canvas element.</p>
 	</div>
-		<p>Based on the original <a href="http://madebyevan.com/fsm/">FSM designer</a> by Evan Wallace.
-
+	<p>Based on the original <a href="http://madebyevan.com/fsm/">FSM designer</a> by Evan Wallace.
 	<p>Update by <a href="https://nissen96.github.io/">Alexander Nissen</a> in 2020</p>
 	<p>Update by <a href="https://markusfeng.com">Markus Feng</a> in 2019</p>
 	<p>Update by <a href="http://samuelgreen.org/">Samuel Green</a> in 2015</p>

@@ -39,10 +39,12 @@ def deploy():
     print('cleaning up folder')
     try:
         for obj in os.listdir('./'):
-            if (os.path.isdir(obj) and obj != '.git'):
+            if os.path.isdir(obj) and obj != '.git':
                 shutil.rmtree(obj)
-
         os.remove('./build.py')
+        os.remove('./.gitignore')
+        os.remove('./travis.yml')
+        os.remove('./LICENSE'
     except:
         print('cleanup failed')
     else:

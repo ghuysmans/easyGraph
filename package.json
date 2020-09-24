@@ -1,0 +1,17 @@
+{
+  "name": "easygraph",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "python ./build.py",
+    "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lint": "npm run lint:js"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
+  }
+}

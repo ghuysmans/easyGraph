@@ -5,16 +5,14 @@ function restoreBackup() {
 
   try {
     const backup = JSON.parse(localStorage['fsm'])
-
-    for (let i = 0; i < backup.nodes.length; i++) {
-      const backupNode = backup.nodes[i]
+    backup.nodes.forEach(backupNode => {
       const node = new Node(backupNode.x, backupNode.y)
       node.isAcceptState = backupNode.isAcceptState
       node.text = backupNode.text
       nodes.push(node)
-    }
-    for (let i = 0; i < backup.links.length; i++) {
-      const backupLink = backup.links[i]
+    })
+
+    backup.links.forEach(backupLink => {
       let link = null
       const directed = backupLink.directed
       if (backupLink.type === 'SelfLink') {
@@ -40,7 +38,7 @@ function restoreBackup() {
       if (link != null) {
         links.push(link)
       }
-    }
+    })
   } catch (e) {
     localStorage['fsm'] = ''
   }
@@ -52,8 +50,7 @@ function backupData() {
     links: [],
   }
 
-  for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i]
+  nodes.forEach(node => {
     const backupNode = {
       x: node.x,
       y: node.y,
@@ -61,9 +58,9 @@ function backupData() {
       isAcceptState: node.isAcceptState,
     }
     backup.nodes.push(backupNode)
-  }
-  for (let i = 0; i < links.length; i++) {
-    const link = links[i]
+  })
+
+  links.forEach(link => {
     let backupLink = null
     if (link instanceof SelfLink) {
       backupLink = {
@@ -97,7 +94,7 @@ function backupData() {
     if (backupLink != null) {
       backup.links.push(backupLink)
     }
-  }
+  })
 
   return backup
 }

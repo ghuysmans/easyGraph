@@ -45,9 +45,7 @@ function ExportAsSVG() {
         '"/>\n'
     } else {
       if (isReversed) {
-        const temp = startAngle
-        startAngle = endAngle
-        endAngle = temp
+        [startAngle, endAngle] = [endAngle, startAngle]
       }
 
       if (endAngle < startAngle) {
@@ -84,13 +82,9 @@ function ExportAsSVG() {
       '" stroke-width="' +
       this.lineWidth +
       '" points="'
-    for (const i = 0; i < this._points.length; i++) {
-      this._svgData +=
-        (i > 0 ? ' ' : '') +
-        fixed(this._points[i].x, 3) +
-        ',' +
-        fixed(this._points[i].y, 3)
-    }
+    this._points.forEach((p, i) =>
+      this._svgData += (i > 0 ? ' ' : '') + fixed(p.x, 3) + ',' + fixed(p.y, 3)
+    )
     this._svgData += '"/>\n'
   }
   this.fill = function () {
@@ -101,13 +95,9 @@ function ExportAsSVG() {
       '" stroke-width="' +
       this.lineWidth +
       '" points="'
-    for (const i = 0; i < this._points.length; i++) {
-      this._svgData +=
-        (i > 0 ? ' ' : '') +
-        fixed(this._points[i].x, 3) +
-        ',' +
-        fixed(this._points[i].y, 3)
-    }
+    this._points.forEach((p, i) =>
+      this._svgData += (i > 0 ? ' ' : '') + fixed(p.x, 3) + ',' + fixed(p.y, 3)
+    )
     this._svgData += '"/>\n'
   }
   this.measureText = function (text) {

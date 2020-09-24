@@ -3,40 +3,10 @@ function det(a, b, c, d, e, f, g, h, i) {
 }
 
 function circleFromThreePoints(x1, y1, x2, y2, x3, y3) {
-	const a = det(x1, y1, 1, x2, y2, 1, x3, y3, 1);
-	const bx = -det(
-		x1 * x1 + y1 * y1,
-		y1,
-		1,
-		x2 * x2 + y2 * y2,
-		y2,
-		1,
-		x3 * x3 + y3 * y3,
-		y3,
-		1
-	);
-	const by = det(
-		x1 * x1 + y1 * y1,
-		x1,
-		1,
-		x2 * x2 + y2 * y2,
-		x2,
-		1,
-		x3 * x3 + y3 * y3,
-		x3,
-		1
-	);
-	const c = -det(
-		x1 * x1 + y1 * y1,
-		x1,
-		y1,
-		x2 * x2 + y2 * y2,
-		x2,
-		y2,
-		x3 * x3 + y3 * y3,
-		x3,
-		y3
-	);
+	const a = det(x1, y1, 1, x2, y2, 1, x3, y3, 1)
+	const bx = -det(x1 * x1 + y1 * y1, y1, 1, x2 * x2 + y2 * y2, y2, 1, x3 * x3 + y3 * y3, y3, 1)
+	const by = det(x1 * x1 + y1 * y1, x1, 1, x2 * x2 + y2 * y2, x2, 1, x3 * x3 + y3 * y3, x3, 1)
+	const c = -det(x1 * x1 + y1 * y1, x1, y1, x2 * x2 + y2 * y2, x2, y2, x3 * x3 + y3 * y3, x3, y3)
 	return {
     x: -bx / (2 * a),
     y: -by / (2 * a),

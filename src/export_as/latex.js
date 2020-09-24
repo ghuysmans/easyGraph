@@ -42,9 +42,7 @@ function ExportAsLaTeX() {
         ');\n'
     } else {
       if (isReversed) {
-        let temp = startAngle
-        startAngle = endAngle
-        endAngle = temp
+        [startAngle, endAngle] = [endAngle, startAngle]
       }
       if (endAngle < startAngle) {
         endAngle += Math.PI * 2
@@ -83,21 +81,17 @@ function ExportAsLaTeX() {
   this.stroke = function () {
     if (this._points.length === 0) return
     this._texData += '\\draw [' + this.strokeStyle + ']'
-    for (let i = 0; i < this._points.length; i++) {
-      const p = this._points[i]
-      this._texData +=
-        (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
-    }
+    this._points.forEach((p, i) => {
+      this._texData += (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
+    })
     this._texData += ';\n'
   }
   this.fill = function () {
     if (this._points.length === 0) return
     this._texData += '\\fill [' + this.strokeStyle + ']'
-    for (let i = 0; i < this._points.length; i++) {
-      const p = this._points[i]
-      this._texData +=
-        (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
-    }
+    this._points.forEach((p, i) => {
+      this._texData += (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
+    })
     this._texData += ';\n'
   }
   this.measureText = function (text) {
@@ -114,11 +108,21 @@ function ExportAsLaTeX() {
         const dx = Math.cos(angleOrNull)
         const dy = Math.sin(angleOrNull)
         if (Math.abs(dx) > Math.abs(dy)) {
-          if (dx > 0) (nodeParams = '[right] '), (x -= width / 2)
-          else (nodeParams = '[left] '), (x += width / 2)
+          if (dx > 0) {
+            nodeParams = '[right] '
+            x -= width / 2
+          } else {
+            nodeParams = '[left] '
+            x += width / 2
+          }
         } else {
-          if (dy > 0) (nodeParams = '[below] '), (y -= 10)
-          else (nodeParams = '[above] '), (y += 10)
+          if (dy > 0) {
+            nodeParams = '[below] '
+            y -= 10
+          } else {
+            nodeParams = '[above] '
+            y += 10
+          }
         }
       }
       x *= this._scale

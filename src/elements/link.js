@@ -46,7 +46,7 @@ Link.prototype.setAnchorPoint = function (x, y) {
 }
 
 Link.prototype.getEndPointsAndCircle = function () {
-  if (this.perpendicularPart == 0) {
+  if (this.perpendicularPart === 0) {
 		const midX = (this.nodeA.x + this.nodeB.x) / 2;
 		const midY = (this.nodeA.y + this.nodeB.y) / 2;
 		const start = this.nodeA.closestPointOnCircle(midX, midY);

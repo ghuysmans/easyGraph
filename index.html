@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 	<head>
 		<title>EasyGraph</title>
   	<meta charset="utf-8">
@@ -10,8 +10,9 @@
 		<h1>EasyGraph</h1>
 		<h2>Graph / Finite State Machine Designer</h2>
 		<div class="center">
-			<input type="checkbox" id="directed"> Directed Edges
-			<input type="checkbox" id="gridsnap" checked> Snap to Grid
+			<input type="checkbox" id="directed"><label for="directed"> Directed Edges</label>
+			&nbsp;
+			<input type="checkbox" id="gridsnap" checked><label for="gridsnap"> Snap to Grid</label>
 			<br/>
 			<br/>
 			<button id="clearNodes">Clear all Nodes</button>
@@ -22,7 +23,7 @@
 		</canvas>
 		<div>
 			<p class="center">Export as: <a href="javascript:saveAsJSON()">JSON</a> | <a id="pngLink" href="javascript:saveAsPNG()">PNG</a> | <a href="javascript:saveAsSVG()">SVG</a> | <a href="javascript:saveAsLaTeX()">LaTeX</a> | Import from: <a href="javascript:loadFromJSON()">JSON</a> </p>
-			<textarea id="output"></textarea>
+			<label for="output"></label><textarea id="output"></textarea>
 			<p class="center"><button id="importButton" hidden>Import</button></p>
 			<p>The big white box above is the FSM designer.&nbsp; Here's how to use it:</p>
 			<ul>

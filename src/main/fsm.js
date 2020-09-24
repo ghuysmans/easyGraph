@@ -34,17 +34,16 @@ function checkDirected() {
 
 function convertLatexShortcuts(text) {
   // html greek characters
-  for (let i = 0; i < greekLetterNames.length; i++) {
-    const name = greekLetterNames[i]
+  greekLetterNames.forEach((letter, i) => {
     text = text.replace(
-      new RegExp('\\\\' + name, 'g'),
+      new RegExp('\\\\' + letter, 'g'),
       String.fromCharCode(913 + i + (i > 16))
     )
     text = text.replace(
-      new RegExp('\\\\' + name.toLowerCase(), 'g'),
+      new RegExp('\\\\' + letter.toLowerCase(), 'g'),
       String.fromCharCode(945 + i + (i > 16))
     )
-  }
+  })
 
   // subscripts
   for (let i = 0; i < 10; i++) {
@@ -57,14 +56,14 @@ function convertLatexShortcuts(text) {
 function textToXML(text) {
   text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   let result = ''
-  for (let i = 0; i < text.length; i++) {
-    const c = text.charCodeAt(i)
-    if (c >= 0x20 && c <= 0x7e) {
+  text.forEach((c, i) => {
+    const cc = text.charCodeAt(i)
+    if (cc >= 0x20 && cc <= 0x7e) {
       result += text[i]
     } else {
-      result += '&#' + c + ';'
+      result += '&#' + cc + ';'
     }
-  }
+  })
   return result
 }
 
@@ -134,7 +133,6 @@ const nodeRadius = 30
 const nodes = []
 const links = []
 
-const cursorVisible = true
 const snapToPadding = 6 // pixels
 const hitTargetPadding = 6 // pixels
 const gridSnapPadding = 30 // pixels
@@ -148,16 +146,17 @@ function drawUsing(c) {
   c.save()
   c.translate(0.5, 0.5)
 
-  for (let i = 0; i < nodes.length; i++) {
+  nodes.forEach(node => {
     c.lineWidth = 1
-    c.fillStyle = c.strokeStyle = nodes[i] === selectedObject ? 'blue' : 'black'
-    nodes[i].draw(c)
-  }
-  for (let i = 0; i < links.length; i++) {
+    c.fillStyle = c.strokeStyle = node === selectedObject ? 'blue' : 'black'
+    node.draw(c)
+  })
+  links.forEach(link => {
     c.lineWidth = 1
-    c.fillStyle = c.strokeStyle = links[i] === selectedObject ? 'blue' : 'black'
-    links[i].draw(c)
-  }
+    c.fillStyle = c.strokeStyle = link === selectedObject ? 'blue' : 'black'
+    link.draw(c)
+  })
+
   if (currentLink != null) {
     c.lineWidth = 1
     c.fillStyle = c.strokeStyle = 'black'
@@ -173,17 +172,8 @@ function draw() {
 }
 
 function selectObject(x, y) {
-  for (let i = 0; i < nodes.length; i++) {
-    if (nodes[i].containsPoint(x, y)) {
-      return nodes[i]
-    }
-  }
-  for (let i = 0; i < links.length; i++) {
-    if (links[i].containsPoint(x, y)) {
-      return links[i]
-    }
-  }
-  return null
+  return nodes.find(node => node.containsPoint(x, y)) ||
+    links.find(link => link.containsPoint(x, y));
 }
 
 function snapNode(node) {
@@ -195,17 +185,17 @@ function snapNode(node) {
     node.x = xTemp - (xTemp % gridSnapPadding)
     node.y = yTemp - (yTemp % gridSnapPadding)
   } else {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i] === node) continue
+    nodes.forEach(curNode => {
+      if (curNode === node) return
 
-      if (Math.abs(node.x - nodes[i].x) < snapToPadding) {
-        node.x = nodes[i].x
+      if (Math.abs(node.x - curNode.x) < snapToPadding) {
+        node.x = curNode.x
       }
 
-      if (Math.abs(node.y - nodes[i].y) < snapToPadding) {
-        node.y = nodes[i].y
+      if (Math.abs(node.y - curNode.y) < snapToPadding) {
+        node.y = curNode.y
       }
-    }
+    })
   }
 }
 
@@ -216,9 +206,7 @@ window.onload = function () {
   }
 
   document.getElementById('clearNodes').onclick = function () {
-    for (let i = 0; i < nodes.length; i++) {
-      nodes[i].text = ''
-    }
+    nodes.forEach(node => node.text = '')
     draw()
   }
 
@@ -238,7 +226,7 @@ window.onload = function () {
     selectedObject = selectObject(mouse.x, mouse.y)
     movingObject = false
     originalClick = mouse
-    if (selectedObject != null) {
+    if (selectedObject) {
       if (shift && selectedObject instanceof Node) {
         currentLink = new SelfLink(selectedObject, mouse, checkDirected())
       } else {
@@ -269,7 +257,7 @@ window.onload = function () {
     const mouse = crossBrowserRelativeMousePos(e)
 
     selectedObject = selectObject(mouse.x, mouse.y)
-    if (selectedObject == null) {
+    if (selectedObject === undefined) {
       selectedObject = new Node(mouse.x, mouse.y)
       nodes.push(selectedObject)
       resetCaret()
@@ -289,7 +277,7 @@ window.onload = function () {
         targetNode = null
       }
 
-      if (selectedObject == null) {
+      if (selectedObject === undefined) {
         if (targetNode != null) {
           currentLink = new StartLink(
             targetNode,

@@ -11,10 +11,10 @@ function Link(a, b, directed) {
 }
 
 Link.prototype.getAnchorPoint = function () {
-	const dx = this.nodeB.x - this.nodeA.x;
-	const dy = this.nodeB.y - this.nodeA.y;
-	const scale = Math.sqrt(dx * dx + dy * dy);
-	return {
+  const dx = this.nodeB.x - this.nodeA.x
+  const dy = this.nodeB.y - this.nodeA.y
+  const scale = Math.sqrt(dx * dx + dy * dy)
+  return {
     x:
       this.nodeA.x +
       dx * this.parallelPart -
@@ -27,10 +27,10 @@ Link.prototype.getAnchorPoint = function () {
 }
 
 Link.prototype.setAnchorPoint = function (x, y) {
-	const dx = this.nodeB.x - this.nodeA.x;
-	const dy = this.nodeB.y - this.nodeA.y;
-	const scale = Math.sqrt(dx * dx + dy * dy);
-	this.parallelPart =
+  const dx = this.nodeB.x - this.nodeA.x
+  const dy = this.nodeB.y - this.nodeA.y
+  const scale = Math.sqrt(dx * dx + dy * dy)
+  this.parallelPart =
     (dx * (x - this.nodeA.x) + dy * (y - this.nodeA.y)) / (scale * scale)
   this.perpendicularPart =
     (dx * (y - this.nodeA.y) - dy * (x - this.nodeA.x)) / scale
@@ -47,11 +47,11 @@ Link.prototype.setAnchorPoint = function (x, y) {
 
 Link.prototype.getEndPointsAndCircle = function () {
   if (this.perpendicularPart === 0) {
-		const midX = (this.nodeA.x + this.nodeB.x) / 2;
-		const midY = (this.nodeA.y + this.nodeB.y) / 2;
-		const start = this.nodeA.closestPointOnCircle(midX, midY);
-		const end = this.nodeB.closestPointOnCircle(midX, midY);
-		return {
+    const midX = (this.nodeA.x + this.nodeB.x) / 2
+    const midY = (this.nodeA.y + this.nodeB.y) / 2
+    const start = this.nodeA.closestPointOnCircle(midX, midY)
+    const end = this.nodeB.closestPointOnCircle(midX, midY)
+    return {
       hasCircle: false,
       startX: start.x,
       startY: start.y,
@@ -137,8 +137,8 @@ Link.prototype.draw = function (c) {
   // draw the text
   if (stuff.hasCircle) {
     const startAngle = stuff.startAngle
-		let endAngle = stuff.endAngle;
-		if (endAngle < startAngle) {
+    let endAngle = stuff.endAngle
+    if (endAngle < startAngle) {
       endAngle += Math.PI * 2
     }
     const textAngle = (startAngle + endAngle) / 2 + stuff.isReversed * Math.PI
@@ -194,7 +194,8 @@ Link.prototype.containsPoint = function (x, y) {
     const length = Math.sqrt(dx * dx + dy * dy)
     const percent =
       (dx * (x - stuff.startX) + dy * (y - stuff.startY)) / (length * length)
-    const distance = (dx * (y - stuff.startY) - dy * (x - stuff.startX)) / length
+    const distance =
+      (dx * (y - stuff.startY) - dy * (x - stuff.startX)) / length
     return percent > 0 && percent < 1 && Math.abs(distance) < hitTargetPadding
   }
   return false

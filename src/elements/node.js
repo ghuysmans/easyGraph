@@ -35,10 +35,10 @@ Node.prototype.draw = function (c) {
 }
 
 Node.prototype.closestPointOnCircle = function (x, y) {
-	const dx = x - this.x;
-	const dy = y - this.y;
-	const scale = Math.sqrt(dx * dx + dy * dy);
-	return {
+  const dx = x - this.x
+  const dy = y - this.y
+  const scale = Math.sqrt(dx * dx + dy * dy)
+  return {
     x: this.x + (dx * nodeRadius) / scale,
     y: this.y + (dy * nodeRadius) / scale,
   }

@@ -67,7 +67,14 @@ SelfLink.prototype.draw = function (c) {
   // draw the text on the loop farthest from the node
   const textX = stuff.circleX + stuff.circleRadius * Math.cos(this.anchorAngle)
   const textY = stuff.circleY + stuff.circleRadius * Math.sin(this.anchorAngle)
-  drawText(c, this.text, textX, textY, this.anchorAngle, selectedObject === this)
+  drawText(
+    c,
+    this.text,
+    textX,
+    textY,
+    this.anchorAngle,
+    selectedObject === this
+  )
   // draw the head of the arrow
   if (this.directed) {
     drawArrow(c, stuff.endX, stuff.endY, stuff.endAngle + Math.PI * 0.4)

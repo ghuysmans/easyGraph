@@ -5,14 +5,14 @@ function restoreBackup() {
 
   try {
     const backup = JSON.parse(localStorage['fsm'])
-    backup.nodes.forEach(backupNode => {
+    backup.nodes.forEach((backupNode) => {
       const node = new Node(backupNode.x, backupNode.y)
       node.isAcceptState = backupNode.isAcceptState
       node.text = backupNode.text
       nodes.push(node)
     })
 
-    backup.links.forEach(backupLink => {
+    backup.links.forEach((backupLink) => {
       let link = null
       const directed = backupLink.directed
       if (backupLink.type === 'SelfLink') {
@@ -50,7 +50,7 @@ function backupData() {
     links: [],
   }
 
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     const backupNode = {
       x: node.x,
       y: node.y,
@@ -60,7 +60,7 @@ function backupData() {
     backup.nodes.push(backupNode)
   })
 
-  links.forEach(link => {
+  links.forEach((link) => {
     let backupLink = null
     if (link instanceof SelfLink) {
       backupLink = {

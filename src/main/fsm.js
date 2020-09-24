@@ -82,7 +82,7 @@ function canvasHasFocus() {
 }
 
 function drawText(c, originalText, x, y, angleOrNull, isSelected) {
-	let text = convertLatexShortcuts(originalText)
+  let text = convertLatexShortcuts(originalText)
   c.font = '20px "Times New Roman", serif'
   const width = c.measureText(text).width
 
@@ -146,12 +146,12 @@ function drawUsing(c) {
   c.save()
   c.translate(0.5, 0.5)
 
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     c.lineWidth = 1
     c.fillStyle = c.strokeStyle = node === selectedObject ? 'blue' : 'black'
     node.draw(c)
   })
-  links.forEach(link => {
+  links.forEach((link) => {
     c.lineWidth = 1
     c.fillStyle = c.strokeStyle = link === selectedObject ? 'blue' : 'black'
     link.draw(c)
@@ -172,8 +172,10 @@ function draw() {
 }
 
 function selectObject(x, y) {
-  return nodes.find(node => node.containsPoint(x, y)) ||
-    links.find(link => link.containsPoint(x, y));
+  return (
+    nodes.find((node) => node.containsPoint(x, y)) ||
+    links.find((link) => link.containsPoint(x, y))
+  )
 }
 
 function snapNode(node) {
@@ -185,7 +187,7 @@ function snapNode(node) {
     node.x = xTemp - (xTemp % gridSnapPadding)
     node.y = yTemp - (yTemp % gridSnapPadding)
   } else {
-    nodes.forEach(curNode => {
+    nodes.forEach((curNode) => {
       if (curNode === node) return
 
       if (Math.abs(node.x - curNode.x) < snapToPadding) {
@@ -206,7 +208,7 @@ window.onload = function () {
   }
 
   document.getElementById('clearNodes').onclick = function () {
-    nodes.forEach(node => node.text = '')
+    nodes.forEach((node) => (node.text = ''))
     draw()
   }
 
@@ -417,7 +419,8 @@ function crossBrowserKey(e) {
 function crossBrowserElementPos(e) {
   e = e || window.event
   let obj = e.target || e.srcElement
-  let x = 0, y = 0
+  let x = 0,
+    y = 0
   while (obj.offsetParent) {
     x += obj.offsetLeft
     y += obj.offsetTop

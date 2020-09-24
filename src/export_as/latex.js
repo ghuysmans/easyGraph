@@ -42,7 +42,7 @@ function ExportAsLaTeX() {
         ');\n'
     } else {
       if (isReversed) {
-        [startAngle, endAngle] = [endAngle, startAngle]
+        ;[startAngle, endAngle] = [endAngle, startAngle]
       }
       if (endAngle < startAngle) {
         endAngle += Math.PI * 2
@@ -82,7 +82,8 @@ function ExportAsLaTeX() {
     if (this._points.length === 0) return
     this._texData += '\\draw [' + this.strokeStyle + ']'
     this._points.forEach((p, i) => {
-      this._texData += (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
+      this._texData +=
+        (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
     })
     this._texData += ';\n'
   }
@@ -90,7 +91,8 @@ function ExportAsLaTeX() {
     if (this._points.length === 0) return
     this._texData += '\\fill [' + this.strokeStyle + ']'
     this._points.forEach((p, i) => {
-      this._texData += (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
+      this._texData +=
+        (i > 0 ? ' --' : '') + ' (' + fixed(p.x, 2) + ',' + fixed(-p.y, 2) + ')'
     })
     this._texData += ';\n'
   }

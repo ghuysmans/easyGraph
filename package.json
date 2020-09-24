@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "python ./build.py",
+    "build": "python ./build.py --minify",
     "lint:js": "eslint --ext .js --ignore-path .gitignore .",
     "lint": "npm run lint:js"
   },

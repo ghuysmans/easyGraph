@@ -47,11 +47,37 @@ module X = struct
 end
 
 
-let () =
-  match Yojson.Safe.from_channel stdin |> G.of_yojson with
+let compile id number inp =
+  let ch =
+    match inp with
+    | None -> stdin
+    | Some fn -> open_in fn
+  in
+  match Yojson.Safe.from_channel ch |> G.of_yojson with
   | Error e ->
     prerr_endline ("invalid " ^ e)
   | Ok g ->
-    EasyGraph.Xstate.of_graph ~id:"machine" ~named:true g |>
+    EasyGraph.Xstate.of_graph ~id ~named:(not number) g |>
     X.to_yojson |>
     Yojson.Safe.pretty_to_channel stdout
+
+open Cmdliner
+
+let number =
+  let doc = "number states instead of using their names" in
+  Arg.(value & flag & info ~doc ["n"; "number"])
+
+let id =
+  let doc = "id" in
+  Arg.(value & opt string "machine" & info ~doc ["id"])
+
+let input =
+  Arg.(value & pos 0 (some file) None & info ~docv:"INPUT" [])
+
+let () =
+  let open Term in
+  let t =
+    const compile $ id $ number $ input,
+    info "easy" ~doc:"an easyGraph compiler"
+  in
+  exit @@ eval t

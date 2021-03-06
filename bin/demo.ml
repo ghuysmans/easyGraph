@@ -1,14 +1,25 @@
+let sum_of_yojson ~err fs = function
+  | `Assoc l ->
+    (match l |> List.partition (function "type", _ -> true | _ -> false) with
+     | [_, `String typ], l ->
+       (match List.assoc_opt typ fs with
+        | None -> Error err
+        | Some f -> f (`Assoc l))
+     | _ -> Error err)
+  | _ -> Error err
+
+
 module G = struct
-  type link = [%import: EasyGraph.Graph.link] [@@deriving yojson {strict = false}]
-  type start_link = [%import: EasyGraph.Graph.start_link] [@@deriving yojson {strict = false}]
+  type link = [%import: EasyGraph.Graph.link] [@@deriving yojson]
+  type start_link = [%import: EasyGraph.Graph.start_link] [@@deriving yojson]
   type edge = EasyGraph.Graph.edge
-  let edge_of_yojson t =
-    let open Yojson.Safe.Util in
+  let edge_of_yojson =
     let (>|=) = Ppx_deriving_yojson_runtime.(>|=) in
-    match member "type" t |> to_string with
-    | "Link" -> link_of_yojson t >|= fun l -> EasyGraph.Graph.Link l
-    | "StartLink" -> start_link_of_yojson t >|= fun l -> EasyGraph.Graph.StartLink l
-    | _ -> Error "edge_of_yojson"
+    let open EasyGraph.Graph in
+    sum_of_yojson ~err:"edge_of_yojson" [
+      "Link", (fun l -> link_of_yojson l >|= fun l -> Link l);
+      "StartLink", (fun l -> start_link_of_yojson l >|= fun l -> StartLink l);
+    ]
   let edge_to_yojson = function
     | EasyGraph.Graph.Link l -> link_to_yojson l
     | StartLink l -> start_link_to_yojson l

@@ -32,7 +32,7 @@ let of_graph ~id ~named {nodes; links} =
         typ = if isAcceptState then Some "final" else None;
         on = links |> List.filter_map (function
           | StartLink _ -> None
-          | Link {directed = false; _} -> None
+          | Link {directed = false; _} -> failwith "undirected link"
           | Link {nodeA; _} when nodeA <> i -> None
           | Link {nodeB; text; _} -> Some (text, names.(nodeB))
         );

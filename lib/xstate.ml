@@ -26,26 +26,29 @@ let of_graph ~id ~named {nodes; links} =
         Printf.sprintf "s%d" i
     )
   in
+  let start_links, links =
+    links |> List.partition (function
+      | StartLink _ -> true
+      | Link _ -> false
+    )
+  in
+  let out_edges = Array.(make (length names) []) in
+  links |> List.iter (function
+    | StartLink _ -> assert false (* filtered above *)
+    | Link {directed = false; _} -> failwith "undirected link"
+    | Link {nodeA; nodeB; text; _} ->
+      out_edges.(nodeA) <- (text, names.(nodeB)) :: out_edges.(nodeA)
+  );
   let states =
     nodes |> Array.mapi (fun i {isAcceptState; _} ->
       names.(i), {
         typ = if isAcceptState then Some "final" else None;
-        on = links |> List.filter_map (function
-          | StartLink _ -> None
-          | Link {directed = false; _} -> failwith "undirected link"
-          | Link {nodeA; _} when nodeA <> i -> None
-          | Link {nodeB; text; _} -> Some (text, names.(nodeB))
-        );
+        on = out_edges.(i);
       }
     )
   in
   let initial =
-    match
-      links |> List.filter (function
-        | StartLink _ -> true
-        | _ -> false
-      )
-    with
+    match start_links with
     | [] -> failwith "no initial state"
     | [StartLink {directed = false; _}] -> failwith "undirected start link"
     | [StartLink {node; _}] -> names.(node)

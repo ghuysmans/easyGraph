@@ -1,0 +1,4 @@
+(executable
+ (name demo)
+ (libraries easyGraph)
+ (preprocess (staged_pps ppx_import ppx_deriving_yojson)))

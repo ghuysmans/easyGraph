@@ -1,2 +1,5 @@
 fsm.js
 .idea
+
+_build/
+.merlin

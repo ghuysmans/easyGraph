@@ -1,4 +1,4 @@
 (executable
- (name easy)
+ (public_name easyc)
  (libraries easyGraph cmdliner)
  (preprocess (staged_pps ppx_import ppx_deriving_yojson)))

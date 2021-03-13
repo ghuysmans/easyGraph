@@ -1,0 +1,16 @@
+opam-version: "2.0"
+name: "easyGraph"
+version: "dev"
+maintainer: "Guillaume Huysmans <ghuysmans99@gmail.com>"
+authors: "Guillaume Huysmans <ghuysmans99@gmail.com>"
+homepage: "https://github.com/ghuysmans/easygraph/"
+bug-reports: "https://github.com/ghuysmans/easygraph/issues"
+dev-repo: "git+https://github.com/ghuysmans/easygraph/"
+build: [["dune" "build" "-p" name "-j" jobs]]
+depends: [
+  "dune" {>= "2.7"}
+  "cmdliner"
+  "ppx_deriving_yojson" {>= "3.5.2"}
+  "re"
+]
+synopsis: "easyGraph compiler"

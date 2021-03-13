@@ -1,23 +1,22 @@
-type e = string
 type s = string
 
-type state = {
+type 'e state = {
   typ: string option; (* final? *)
-  on: (e * s) list;
+  on: ('e * s) list;
   (* actions: unit; *)
 }
 
-type t = {
+type 'e t = {
   id: string;
   initial: s;
   context: unit; (* FIXME *)
-  states: (s * state) array;
+  states: (s * 'e state) array;
 }
 
 
 open Graph
 
-let of_graph ~id ~named {nodes; links} =
+let of_graph ~id ~named ~parse_edge {nodes; links} =
   let names =
     nodes |> Array.mapi (fun i ({text; _} : node) ->
       if named then
@@ -37,7 +36,7 @@ let of_graph ~id ~named {nodes; links} =
     | StartLink _ -> assert false (* filtered above *)
     | Link {directed = false; _} -> failwith "undirected link"
     | Link {nodeA; nodeB; text; _} ->
-      out_edges.(nodeA) <- (text, names.(nodeB)) :: out_edges.(nodeA)
+      out_edges.(nodeA) <- (parse_edge text, names.(nodeB)) :: out_edges.(nodeA)
   );
   let states =
     nodes |> Array.mapi (fun i {isAcceptState; _} ->

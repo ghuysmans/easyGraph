@@ -1,1 +1,5 @@
-(library (name easyGraph))
+(library
+ (name easyGraph)
+ (libraries re)
+ (inline_tests)
+ (preprocess (pps ppx_inline_test)))

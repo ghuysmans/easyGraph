@@ -28,21 +28,26 @@ module G = struct
 end
 
 module X = struct
-  type e = [%import: EasyGraph.Xstate.e] [@@deriving to_yojson]
   type s = [%import: EasyGraph.Xstate.s] [@@deriving to_yojson]
-  let on_to_yojson l =
-    `Assoc (l |> List.map (fun (k, v) -> k, `String v))
-  type state = EasyGraph.Xstate.state = {
+  let on_to_yojson f l =
+    `Assoc (l |> List.map (fun (k, v) ->
+      let k =
+        match f k with
+        | `String s -> s
+        | _ -> failwith "bad f in on_to_yojson" (* FIXME fix types? *)
+      in
+      k, `String v))
+  type 'e state = 'e EasyGraph.Xstate.state = {
     typ: string option [@key "type"] [@default None]; (* final? *)
-    on: (e * s) list [@of_yojson on_of_yojson] [@to_yojson on_to_yojson];
+    on: ('e * s) list [@to_yojson on_to_yojson poly_e];
   } [@@deriving to_yojson]
-  let states_to_yojson a =
-    `Assoc (a |> Array.to_list |> List.map (fun (k, v) -> k, state_to_yojson v))
-  type t = EasyGraph.Xstate.t = {
+  let states_to_yojson f a =
+    `Assoc (a |> Array.to_list |> List.map (fun (k, v) -> k, state_to_yojson f v))
+  type 'e t = 'e EasyGraph.Xstate.t = {
     id: string;
     initial: s;
     context: unit [@to_yojson (fun () -> `Assoc [])];
-    states: (s * state) array [@to_yojson states_to_yojson];
+    states: (s * 'e state) array [@to_yojson states_to_yojson poly_e];
   } [@@deriving to_yojson]
 end
 
@@ -57,8 +62,9 @@ let compile id number inp =
   | Error e ->
     prerr_endline ("invalid " ^ e)
   | Ok g ->
-    EasyGraph.Xstate.of_graph ~id ~named:(not number) g |>
-    X.to_yojson |>
+    let parse_edge = EasyGraph.Event.of_string in
+    EasyGraph.Xstate.of_graph ~id ~named:(not number) ~parse_edge g |>
+    X.to_yojson (fun x -> `String (EasyGraph.Event.to_string x)) |>
     Yojson.Safe.pretty_to_channel stdout
 
 open Cmdliner

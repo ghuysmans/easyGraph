@@ -52,7 +52,13 @@ module X = struct
 end
 
 
-let compile id number inp =
+type fmt =
+  | XState
+  | JS
+  | JS_if
+  | JS_fun
+
+let compile id number inp out =
   let ch =
     match inp with
     | None -> stdin
@@ -63,9 +69,14 @@ let compile id number inp =
     prerr_endline ("invalid " ^ e)
   | Ok g ->
     let parse_edge = EasyGraph.Event.of_string in
-    EasyGraph.Xstate.of_graph ~id ~named:(not number) ~parse_edge g |>
-    X.to_yojson (fun x -> `String (EasyGraph.Event.to_string x)) |>
-    Yojson.Safe.pretty_to_channel stdout
+    let x = EasyGraph.Xstate.of_graph ~id ~named:(not number) ~parse_edge g in
+    match out with
+    | XState ->
+      X.to_yojson (fun x -> `String (EasyGraph.Event.to_string x)) x |>
+      Yojson.Safe.pretty_to_channel stdout
+    | JS -> EasyGraph.Js.gen `Imperative x
+    | JS_if -> EasyGraph.Js.(gen `Imperative ~cases:gen_if) x
+    | JS_fun -> EasyGraph.Js.gen `Functional x
 
 open Cmdliner
 
@@ -80,10 +91,20 @@ let id =
 let input =
   Arg.(value & pos 0 (some file) None & info ~docv:"INPUT" [])
 
+let format =
+  let doc = "format" in
+  let t = Arg.enum [
+    "xstate", XState;
+    "js", JS;
+    "js_if", JS_if;
+    "functional_js", JS_fun;
+  ] in
+  Arg.(value & opt t XState & info ~doc ["f"; "format"])
+
 let () =
   let open Term in
   let t =
-    const compile $ id $ number $ input,
+    const compile $ id $ number $ input $ format,
     info "easy" ~doc:"an easyGraph compiler"
   in
   exit @@ eval t
